@@ -17,6 +17,7 @@ csv = "1.1"
 # workspace
 rsp-host-executor.workspace = true
 rsp-client-executor.workspace = true
+web-time = "1.1.0"
 
 # alloy
 alloy-provider.workspace = true

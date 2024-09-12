@@ -11,6 +11,7 @@ use std::path::PathBuf;
 use tracing_subscriber::{
     filter::EnvFilter, fmt, prelude::__tracing_subscriber_SubscriberExt, util::SubscriberInitExt,
 };
+use web_time::Instant;
 
 mod execute;
 use execute::process_execution_report;
@@ -136,11 +137,14 @@ async fn main() -> eyre::Result<()> {
     if args.prove {
         // Actually generate the proof. It is strongly recommended you use the network prover
         // given the size of these programs.
+        let mut proving_start = Instant::now();
         println!("Starting proof generation.");
         let proof = client.prove(&pk, stdin).compressed().run().expect("Proving should work.");
-        println!("Proof generation finished.");
+        println!("Proof generation finished, timeElapsed={}", proving_start.elapsed().as_secs_f64());
 
+        proving_start = Instant::now();
         client.verify(&proof, &vk).expect("proof verification should succeed");
+        println!("Verification succeeded, timeElapsed={}", proving_start.elapsed().as_secs_f64())
     }
 
     Ok(())
